@@ -1,21 +1,16 @@
 <template>
-  <span v-bind:class = "{'cell':true, 'alive':alive}" v-on:click="checkCell"></span>
+  <span v-bind:class = "{'cell':true, 'state':state}" v-on:click="toggleState"></span>
 </template>
 <script>
 
 export default{
-  data(){
-    return{
-      alive: false
-      // the cell is not populated by default
-    };
-  },
-  props:['columnIndex'],
+  props:['state','columnIndex'],
   methods:{
-    // checkCell: change if the cell is alive
-      checkCell(){
-        this.alive = !this.alive;
-        this.$emit('report-life',this.alive,this.columnIndex)
+      toggleState(){
+        console.log('cell')
+        this.$emit('toggle-state',this.columnIndex)
+        console.log('back to cell')
+        console.log(this.state);
       }
   }
 }

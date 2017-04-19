@@ -10,8 +10,12 @@ new Vue({
   el: '#root',
   data:{
     size: 4,
-    allDead:true,
-    liveCells:[]
+    liveCells:[],
+    initialState:[
+      [false,true,false,false],
+      [false,false,false,false],
+      [false,false,false,false],
+      [false,false,false,false]]
   },
   // template:``,
   components: {
@@ -48,20 +52,8 @@ new Vue({
       })
     }
   },
-  reportLife(alive,columnIndex,rowIndex){
-    var cell = {
-      columnIndex:columnIndex,
-      rowIndex: rowIndex
-    }
-    // console.log(typeof(cell.columnIndex))
-    // if this cell is reported alive(being populated), push the cell value into the liveCells array
-    if(alive){
-      this.liveCells.push(cell)
-    }
-    // if this cell is reported dead(being UNpopulated), delete the cell value off of the liveCells array
-    else{
-      this.liveCells.splice(this.liveCells.indexOf(cell),1)
-    }
+  toggleState(columnIndex,rowIndex){
+    this.initialState[rowIndex][columnIndex] =! this.initialState[rowIndex][columnIndex];
   }
 }
 });
