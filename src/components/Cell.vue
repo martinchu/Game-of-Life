@@ -6,12 +6,9 @@
 export default{
   props:['state','columnIndex'],
   methods:{
-      toggleState(){
-        console.log('cell')
-        this.$emit('toggle-state',this.columnIndex)
-        console.log('back to cell')
-        console.log(this.state);
-      }
+    toggleState(){
+      this.$emit('toggle-state',this.columnIndex)
+    }
   }
 }
 </script>

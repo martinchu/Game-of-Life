@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import './style.scss';
 
-import genres from './util/genres';
 import Board from './components/Board.vue'
 
 // var socket = io();
@@ -17,7 +16,6 @@ new Vue({
       [false,false,false,false],
       [false,false,false,false]]
   },
-  // template:``,
   components: {
     Board,
 

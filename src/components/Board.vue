@@ -12,9 +12,7 @@ export default{
   },
   methods:{
     toggleState(columnIndex,rowIndex){
-      console.log('board')
       this.$emit('toggle-state',columnIndex,rowIndex)
-      console.log('back to board')
     }
   }
 }

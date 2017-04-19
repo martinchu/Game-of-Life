@@ -12,9 +12,7 @@ export default{
   props: ['size','rowIndex', 'rowState'],
   methods:{
     toggleState(columnIndex){
-      console.log('row')
       this.$emit('toggle-state',columnIndex,this.rowIndex)
-      console.log('back to row')
     }
   }
 }

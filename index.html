@@ -17,13 +17,12 @@
     <div id="title">Martin Chu's Game of Life</div>
   </div>
   <div id="root">
-    <board v-bind:size="size" v-on:report-life="reportLife"></board>
+    <board v-bind:size="size"  v-bind:initial-state="initialState" v-on:toggle-state="toggleState"></board>
     <div id="updateButton">
       <form v-on:submit.prevent="onUpdate">
         <input type = "submit" value = "Update" class = "btn">
       </form>
     </div>
-    <!-- <parent v-bind:size="size" v-on:report-life="reportLife"></parent> -->
     <!-- <div v-if="liveCell.length===0" id ="no-live-cell-message">
       no cell is alive
     </div> -->
