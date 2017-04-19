@@ -6,6 +6,9 @@ const path = require('path');
 const fs = require('fs');
 const api = require('./api');
 
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
 if (process.env.NODE_ENV === 'development') {
   require('./webpack-dev-middleware').init(app);
 }
@@ -31,10 +34,13 @@ app.get('/api', function(req, res) {
   });
 });
 
+io.on('connection',function(socket){
+  console.log('a user connected');
+})
+
 app.listen(process.env.PORT, function () {
   console.log(`Example app listening on port ${process.env.PORT}!`);
   if (process.env.NODE_ENV === 'development') {
     require('open')(`http://localhost:${process.env.PORT}`);
   }
 });
-

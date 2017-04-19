@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vue.js Cinema</title>
-    <link rel="icon" href="/public/logo-black-small.png" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
-    <style>
-        [v-cloak] {
-            display: none !important;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game of Life</title>
+  <link rel="icon" href="/public/logo-black-small.png" type="image/x-icon">
+  <style>
+  [v-cloak] {
+    display: none !important;
+  }
+  </style>
 </head>
 <body>
-<div id="root">
-    <board></board>
-    <!-- <div id = "overview">
-        <div class = "main">
-            <movie-list></movie-list>
-            <movie-filter></movie-filter>
-        </div>
+  <div id="GlobalHeader">
+    <img src="public/Logo-Black.png" alt = "website logo">
+    <div id="title">Martin Chu's Game of Life</div>
+  </div>
+  <div id="root">
+    <board v-bind:size="size" v-on:report-life="reportLife"></board>
+    <div id="updateButton">
+      <form v-on:submit.prevent="onUpdate">
+        <input type = "submit" value = "Update" class = "btn">
+      </form>
+    </div>
+    <!-- <parent v-bind:size="size" v-on:report-life="reportLife"></parent> -->
+    <!-- <div v-if="liveCell.length===0" id ="no-live-cell-message">
+      no cell is alive
     </div> -->
-</div>
-<script src="/dist/build.js"></script>
+  </div>
+  <script src="/dist/build.js"></script>
+  <!-- <script src="/socket.io/socket.io.js"></script> -->
 </body>
 </html>
