@@ -6,7 +6,7 @@
   "author": "Martin Chu",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/martinchu/Game-of-Life"
   },
   "license": "UNLICENSED",
   "scripts": {
