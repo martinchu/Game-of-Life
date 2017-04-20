@@ -11,6 +11,9 @@ export default{
   },
   props: ['size','rowIndex', 'rowState'],
   methods:{
+    // when clicked, emit back to parent with extra information
+    // let the parent handle the change of state
+    // the props is binded dynamically so it will update the state
     toggleState(columnIndex){
       this.$emit('toggle-state',columnIndex,this.rowIndex)
     }

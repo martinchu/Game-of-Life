@@ -18,7 +18,9 @@ new Vue({
 
   },
   methods:{
-    // Step through the game
+    // mutateCell: boolean -> Array[Object]
+    // Function: find cells that are going to change state
+    // mutateAliveCell determines whether we are looking for Alive cells that are mutating/going to be dead
     mutateCell:function(mutateAliveCell){
       var mutatingCells=[];
       var targetCells;
@@ -49,8 +51,16 @@ new Vue({
         }
       }
       var overOrUnderPopulated = (neighbourCount>3 ||neighbourCount<2)// if the cell is over/under-populated
-      var threeNeighbour = neighbour > 3;
-      if(overOrUnderPopulated == mutateAliveCell){
+      // looking for Alive cells that are mutating/going to be dead
+      if(overOrUnderPopulated == mutateAliveCell && mutateAliveCell){
+        var mutatingCell = {
+          columnIndex:cell.columnIndex,
+          rowIndex: cell.rowIndex
+        }
+        mutatingCells.push(mutatingCell)
+      }
+      // looking for dead cells that are mutating/going to be alive
+      else if(!mutateAliveCell && neighbourCount==3){
         var mutatingCell = {
           columnIndex:cell.columnIndex,
           rowIndex: cell.rowIndex
@@ -60,20 +70,25 @@ new Vue({
     })
     return mutatingCells;
   },
+  // onUpdate: none -> none
+  // Function: respond to the update button (will be automated with a setinterval in future development)
   onUpdate: function(){
     var newDeadCells = this.mutateCell(true);
+    // find alive cells that are going to be dead
+    var newLiveCells = this.mutateCell(false);
+    // find dead cells that are going to be alive
     newDeadCells.forEach((item)=>{
       this.toggleState(item.columnIndex,item.rowIndex);
+      // kill off cells
     })
-    var newLiveCells = this.mutateCell(false);
-    console.log(newLiveCells);
     newLiveCells.forEach((item)=>{
       this.toggleState(item.columnIndex,item.rowIndex);
+      // populate cells
     })
   },
-  // toggleState: num, num => void
+  // toggleState: num, num => none
   // Function: Notify main.js that user changes a cell
-  // 1. Toggle the state by set a temporary Row Data array and use this.$set
+  // 1. Toggle the state by set a temporary Row Data array and use this.$set (directly changing the array element will not dynamically change the props of the cell)
   // 2. Push on/off the cell of the array that keeps track of the living cell
   toggleState(columnIndex,rowIndex){
     var newRow = [];
@@ -92,13 +107,14 @@ new Vue({
       columnIndex:columnIndex,
       rowIndex: rowIndex
     }
-    // if this cell is reported alive(being populated), push the cell value into the liveCells array
     var originalCellArray;
     var newCellArray;
+    // if this cell is now alive(being populated), push the cell value into the liveCells array and delete it off the deadcells array
     if(this.initialState[rowIndex][columnIndex]){
       newCellArray = this.liveCells;
       originalCellArray = this.deadCells;
     }
+    // if this cell is now alive(being populated), push the cell value into the deadCells array and delete it off the liveCells array
     else{
       newCellArray = this.deadCells;
       originalCellArray = this.liveCells;
@@ -106,11 +122,14 @@ new Vue({
     newCellArray.push(cell);
     originalCellArray.forEach((originalCell,i) =>{
     if(columnIndex == originalCell.columnIndex && rowIndex == originalCell.rowIndex){
-          originalCellArray.splice(i,1)
+          originalCellArray.splice(i,1) //splice the cell is proven to ve not working
         }
     })
   }
 },
+// mounted: none -> none;
+// randomly generated the states of the board
+// will push all the states into the Node JS server in future development
 mounted: function(){
   for(var rowIndex =0;rowIndex<this.size;rowIndex++){
     var tempRow = [];
