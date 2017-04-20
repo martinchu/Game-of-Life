@@ -7,7 +7,7 @@
 
     ```
     $ cd /path/to/install/location
-    $ git clone 
+    $ git clone git@github.com:martinchu/Game-of-Life.git
     ```
 
 2. Install dependencies
