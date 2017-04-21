@@ -21,3 +21,11 @@
     ```
     $ npm run start
     ```
+
+
+## TODOs
+  1. New Veux Constant to store the states of the board
+    ```
+
+
+    ```
