@@ -25,7 +25,45 @@
 
 ## TODOs
   1. New Veux Constant to store the states of the board
-    ```
-
 
     ```
+    ```
+    ```
+    Vue.use(Vuex);
+
+    const store = new Vuex.Store({
+      state:{
+        boardState: [....,.....]
+      },
+      mutations:{
+        toggleState(state, [columnIndex, rowIndex]){
+          state.boardState[rowIndex][columnIndex].$set(...)
+        }
+      }
+    });
+
+
+    Vue.component({
+      computed:{
+        myVal(){
+          return this.$store.state.myVal;
+        }
+      },
+      methods:{
+        updateVal(){
+          this.$store.commit('toggleState')
+        }
+      },
+      template:
+      <div>...</div>
+    })
+
+
+
+
+
+    ```
+  2. Change the board from boolean based to integar based
+  ```
+
+  ```
