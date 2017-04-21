@@ -1,46 +1,39 @@
-require('dotenv').config({ silent: true });
+require('dotenv').config({silent: true});
 
 const express = require('express');
 const app = express();
 const path = require('path');
 const fs = require('fs');
-const api = require('./api');
+const http = require('http');
 
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+app.use(require('body-parser').json())
 
-if (process.env.NODE_ENV === 'development') {
-  require('./webpack-dev-middleware').init(app);
-}
+app.post('/add_event',(req,res) =>{
+  console.log(req.body)
+  res.sendStatus(200)
+})
 
-if (process.env.NODE_ENV === 'production') {
-  app.use('/dist', express.static(path.join(__dirname, 'dist')));
-}
+let events = [];
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
-let template = fs.readFileSync(path.resolve('./index.html'), 'utf-8');
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
+  let template = fs.readFileSync(path.resolve('./index.html'), 'utf-8');
   res.send(template);
+
 });
 
-app.get('/api', function(req, res) {
-  api.getData(function(err, data) {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.json(data);
-    }
-  });
-});
+const server = http.createServer(app);
 
-io.on('connection',function(socket){
-  console.log('a user connected');
-})
+if (process.env.NODE_ENV === 'development') {
+  const reload = require('reload');
+  const reloadServer = reload(server, app);
+  require('./webpack-dev-middleware').init(app);
+}
 
-app.listen(process.env.PORT, function () {
+server.listen(process.env.PORT, function () {
   console.log(`Example app listening on port ${process.env.PORT}!`);
   if (process.env.NODE_ENV === 'development') {
-    require('open')(`http://localhost:${process.env.PORT}`);
+    require("open")(`http://localhost:${process.env.PORT}`);
   }
 });

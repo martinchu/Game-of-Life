@@ -1,16 +1,14 @@
 require('dotenv').config();
 
-const path = require('path');
-const webpack = require('webpack');
+var path = require('path');
+var webpack = require('webpack');
+var webpackMerge = require('webpack-merge');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-module.exports = {
-  entry: [
-    './src/main.js'
-  ],
+var baseConfig = {
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
-    filename: 'build.js'
   },
   module: {
     rules: [
@@ -20,25 +18,29 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             "presets": [ [ "es2015" ] ],
-            "plugins": [ "transform-es2015-destructuring", "transform-object-rest-spread", "transform-runtime" ]
+            "plugins": [ "transform-es2015-destructuring", "transform-runtime" ]
           }
         }],
-        exclude: /node_modules/,
+        exclude: /node_modules/
       },
       {
         test: /\.scss$/,
-        loader: 'style-loader!css-loader!sass-loader'
+        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader!sass-loader' })
+      },
+      {
+        test: /\.(png|jpg|gif|svg|ttf)$/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]?[hash]',
+          publicPath: process.env.CDN_URL && process.env.NODE_ENV === 'production' ? `${process.env.CDN_URL}/dist/` : false
+        }
       },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
           loaders: {
-            // Since sass-loader (weirdly) has SCSS as its default parse mode, we map
-            // the "scss" and "sass" values for the lang attribute to the right configs here.
-            // other preprocessors should work out of the box, no loader config like this nessessary.
             'scss': 'vue-style-loader!css-loader!sass-loader',
-            'sass': 'vue-style-loader!css-loader!sass-loader?indentedSyntax'
           }
         }
       }
@@ -46,7 +48,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'vue$': 'vue/dist/vue.common.js'
+      'vue$': 'vue/dist/vue.common.js',
     }
   },
   devServer: {
@@ -55,37 +57,53 @@ module.exports = {
   },
   performance: {
     hints: false
-  },
-  devtool: '#eval-source-map'
+  }
 };
 
-if (process.env.NODE_ENV === 'development') {
-  module.exports.plugins = [
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
-  ];
-  module.exports.entry.push('webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000'); //?noInfo=true&quiet=true)
-  module.exports.module.rules[0].use.push({ loader: 'webpack-module-hot-accept' });
-}
+let targets = [ 'web', 'node' ].map((target) => {
+  let obj = webpackMerge(baseConfig, {
+    target: target,
+    entry: {
+      app: target === 'web'
+        ? process.env.NODE_ENV === 'development'
+          ? [ `./src/${target}.entry.js`, 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000' ]
+          : [ `./src/${target}.entry.js` ]
+        : [ `./src/${target}.entry.js` ]
+      ,
+    },
+    output: {
+      filename: `${target}.bundle.js`,
+      libraryTarget: target === 'web' ? 'var' : 'commonjs2'
+    },
+    module: {
+      rules: [
 
-if (process.env.NODE_ENV === 'production') {
-  module.exports.devtool = '#source-map';
-  // http://vue-loader.vuejs.org/en/workflow/production.html
-  module.exports.plugins = (module.exports.plugins || []).concat([
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
-      }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: false
-      }
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
-  ])
-}
+      ]
+    },
+    plugins: target === 'web'
+      ? process.env.NODE_ENV === 'development'
+        ? [
+            new webpack.HotModuleReplacementPlugin(),
+            new ExtractTextPlugin("style.css")
+          ]
+        : [
+            new webpack.DefinePlugin({ 'process.env': { NODE_ENV: '"production"' } }),
+            new webpack.optimize.UglifyJsPlugin({ sourceMap: true, compress: { warnings: false } }),
+            new webpack.LoaderOptionsPlugin({ minimize: true }),
+            new ExtractTextPlugin("style.css")
+          ]
+      : []
+    ,
+    devtool: target === 'web'
+      ? process.env.NODE_ENV === 'development'
+        ? '#eval-source-map'
+        : '#source-map'
+      : false
+  });
+  if (process.env.NODE_ENV === 'development' && target === 'web') {
+    obj.module.rules[0].use.push({ loader: 'webpack-module-hot-accept' });
+  }
+  return obj;
+});
+
+module.exports = targets;

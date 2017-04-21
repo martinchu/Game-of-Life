@@ -3,12 +3,14 @@ import './style.scss';
 
 import Board from './components/Board.vue'
 
+// import Axios from 'axios';
+
 // var socket = io();
 
 new Vue({
   el: '#root',
   data:{
-    size: 4,
+    size: 8,
     liveCells:[],
     deadCells:[],
     initialState:[]
@@ -52,19 +54,15 @@ new Vue({
       }
       var overOrUnderPopulated = (neighbourCount>3 ||neighbourCount<2)// if the cell is over/under-populated
       // looking for Alive cells that are mutating/going to be dead
+      var mutatingCell = {
+        columnIndex:cell.columnIndex,
+        rowIndex: cell.rowIndex
+      }
       if(overOrUnderPopulated == mutateAliveCell && mutateAliveCell){
-        var mutatingCell = {
-          columnIndex:cell.columnIndex,
-          rowIndex: cell.rowIndex
-        }
         mutatingCells.push(mutatingCell)
       }
       // looking for dead cells that are mutating/going to be alive
       else if(!mutateAliveCell && neighbourCount==3){
-        var mutatingCell = {
-          columnIndex:cell.columnIndex,
-          rowIndex: cell.rowIndex
-        }
         mutatingCells.push(mutatingCell)
       }
     })
@@ -148,6 +146,9 @@ mounted: function(){
       tempRow.push(random_boolean);
     }
     this.initialState.push(tempRow);
+    // let obj = []
+    // Axios.post('/add_event',tempRow);
+    // ^posting the object into file
   }
 }
 });

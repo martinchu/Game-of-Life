@@ -1,6 +1,6 @@
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpack = require("webpack");
-const webpackConfig = require('./webpack.config');
+const webpackConfig = require('./webpack.config.js').find(item => item.target === 'web');
 const compiler = webpack(webpackConfig);
 
 module.exports = {
