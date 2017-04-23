@@ -9,14 +9,6 @@ export default{
   components:{
     Row
   },
-  methods:{
-    // when clicked, emit back to parent with extra information
-    // let the parent handle the change of state
-    // the props is binded dynamically so it will update the state
-    // toggleState(columnIndex,rowIndex){
-    //   this.$emit('toggle-state',columnIndex,rowIndex)
-    // }
-  },
   computed:{
     size(){
       return this.$store.state.size;

@@ -70,12 +70,10 @@ new Vue({
     var newLiveCells = this.mutateCell(false);
     // find dead cells that are going to be alive
     newDeadCells.forEach((item)=>{
-      // this.toggleState(item.columnIndex,item.rowIndex);
       this.$store.commit('toggleCell',item)
       // kill off cells
     })
     newLiveCells.forEach((item)=>{
-      // this.toggleState(item.columnIndex,item.rowIndex);
       this.$store.commit('toggleCell',item)
       // populate cells
     })
