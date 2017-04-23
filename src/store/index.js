@@ -2,38 +2,57 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 Vue.use(Vuex);
 
+import Axios from 'axios';
 
 export default new Vuex.Store({
   state:{
     size: 8,
-    liveCells:[],
-    deadCells:[],
     initialState:[]
+  },
+  getters: {
+    liveCells: state => {
+      var liveCells = [];
+      for(var i = 0; i < state.size; i++){
+        for(var j = 0; j < state.size; j++){
+          if(state.initialState[i][j]){
+            var cell ={
+              columnIndex: j,
+              rowIndex: i
+            }
+            liveCells.push(cell)
+          }
+        }
+      }
+      return liveCells;
+    },
+    deadCells: state => {
+      var deadCells = [];
+      for(var i = 0; i < state.size; i++){
+        for(var j = 0; j < state.size; j++){
+          if(!state.initialState[i][j]){
+            var cell ={
+              columnIndex: j,
+              rowIndex: i
+            }
+            deadCells.push(cell)
+          }
+        }
+      }
+      return deadCells;
+    }
   },
   mutations: {
     toggleCell(state,payload){
       Vue.set(state.initialState[payload.rowIndex],payload.columnIndex,!state.initialState[payload.rowIndex][payload.columnIndex])
-      var originalCellArray;
-      var newCellArray;
-      // if this cell is now alive(being populated), push the cell value into the liveCells array and delete it off the deadcells array
-      if(state.initialState[payload.rowIndex][payload.columnIndex]){
-        newCellArray = state.liveCells;
-        originalCellArray = state.deadCells;
-      }
-      // if this cell is now alive(being populated), push the cell value into the deadCells array and delete it off the liveCells array
-      else{
-        newCellArray = state.deadCells;
-        originalCellArray = state.liveCells;
-      }
-      newCellArray.push(payload);
-      originalCellArray.forEach((originalCell,i) =>{
-        if(payload.columnIndex == originalCell.columnIndex && payload.rowIndex == originalCell.rowIndex){
-          originalCellArray.splice(i,1) //splice the cell is proven to ve not working
-        }
-      })
+      Axios.post('/add_event',payload);
+    },
+    addNewRow(state,payload){
+      state.initialState.push(payload)
     }
   },
   actions:{
-
+    addEvent(context,payload){
+      console.log(context)
+    }
   }
 });

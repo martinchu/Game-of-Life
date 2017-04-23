@@ -3,7 +3,6 @@ import './style.scss';
 
 import Board from './components/Board.vue'
 
-// import Axios from 'axios';
 // var socket = io();
 import store from './store'
 
@@ -21,10 +20,10 @@ new Vue({
       var mutatingCells=[];
       var targetCells;
       if(mutateAliveCell){
-        targetCells = this.liveCells
+        targetCells = this.$store.getters.liveCells
       }
       else{
-        targetCells = this.deadCells;
+        targetCells = this.$store.getters.deadCells;
       }
       targetCells.forEach( cell =>{
         var neighbourCount = 0;
@@ -37,7 +36,7 @@ new Vue({
               rowIndex: cell.rowIndex + j
             }
             // Search through existing living cells
-            this.liveCells.forEach( liveCell =>{
+            this.$store.getters.liveCells.forEach( liveCell =>{
               if((i != 0 || j != 0) && neighbour.columnIndex == liveCell.columnIndex && neighbour.rowIndex == liveCell.rowIndex){
                 // if that neighbour is a live cell
                 neighbourCount++;
@@ -88,22 +87,9 @@ mounted: function(){
     var tempRow = [];
     for(var columnIndex=0;columnIndex<this.$store.state.size;columnIndex++){
       var random_boolean = Math.random() >= 0.5;
-      var tempCell = {
-        columnIndex:columnIndex,
-        rowIndex: rowIndex
-      }
-      if(random_boolean){
-        this.$store.state.liveCells.push(tempCell)
-      }
-      else{
-        this.$store.state.deadCells.push(tempCell)
-      }
       tempRow.push(random_boolean);
     }
-    this.$store.state.initialState.push(tempRow);
-    // let obj = []
-    // Axios.post('/add_event',tempRow);
-    // ^posting the object into file
+    this.$store.commit('addNewRow',tempRow);
   }
   // setInterval(this.onUpdate,2500)
 },
@@ -113,12 +99,6 @@ computed:{
   },
   initialState(){
     return this.$store.state.initialState;
-  },
-  liveCells(){
-    return this.$store.state.liveCells;
-  },
-  deadCells(){
-    return this.$store.state.deadCells;
   }
 },
 beforeDestroy: function(){

@@ -9,7 +9,7 @@ const http = require('http');
 app.use(require('body-parser').json())
 
 app.post('/add_event',(req,res) =>{
-  console.log(req.body)
+  events.push(req.body)
   res.sendStatus(200)
 })
 
