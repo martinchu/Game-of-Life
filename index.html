@@ -18,12 +18,17 @@
     <div id="title">Martin Chu's Game of Life</div>
   </div>
   <div id="root">
-    <board v-bind:size="size"  v-bind:initial-state="initialState" v-on:toggle-state="toggleState"></board>
+    <board></board>
     <div id="updateButton">
       <form v-on:submit.prevent="onUpdate">
         <input type = "submit" value = "Update" class = "btn">
       </form>
     </div>
+    <!-- <div id="clearButton">
+      <form v-on:submit.prevent="onClear">
+        <input type = "submit" value = "Clear" class = "btn">
+      </form>
+    </div> -->
   </div>
   <script src="/dist/web.bundle.js"></script>
 </body>
