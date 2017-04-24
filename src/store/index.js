@@ -8,7 +8,7 @@ var socket = io();
 
 const store = new Vuex.Store({
   state:{
-    size: 8,
+    size: 0,
     gameState:[]
   },
   getters: {
@@ -56,7 +56,7 @@ const store = new Vuex.Store({
       return new Promise((resolve,reject) =>{
         Axios.post('/toggle_cell',payload).then(response => {
           if(response.status === 200){
-            socket.emit('chat message',context,payload);
+            socket.emit('toggle cell',context,payload);
             context.commit('toggleCell',payload);
             resolve();
           }
@@ -69,7 +69,7 @@ const store = new Vuex.Store({
     }
   }
 });
-socket.on('chat message',(context,payload) =>{
+socket.on('toggle cell',(context,payload) =>{
   // context.commit('toggleCell',payload);
   store.commit('toggleCell',payload)
 });

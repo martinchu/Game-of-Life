@@ -5,8 +5,9 @@ import Board from './components/Board.vue'
 
 import { store } from './store'
 
-const initialState =Object.assign({},store.state,{ gameState:window.__INITIAL_STATE__ });
+const initialState =Object.assign({},store.state,{ size: window.__INITIAL_STATE__.size, gameState:window.__INITIAL_STATE__.gameState });
 store.replaceState(initialState)
+console.log(store);
 
 new Vue({
   el: '#root',
@@ -78,13 +79,10 @@ new Vue({
       this.$store.dispatch('toggleCell',item)
       // populate cells
     })
-  },
+  }
 },
-// mounted: none -> none;
-// randomly generated the states of the board
-// will push all the states into the Node JS server in future development
 mounted: function(){
-  setInterval(this.onUpdate,2500)
+  setInterval(this.onUpdate, 3000)
 },
 computed:{
   size(){
@@ -96,14 +94,5 @@ computed:{
 },
 beforeDestroy: function(){
   clearInterval(this.onUpdate);
-},
-render(createElement){
-  return createElement(
-    'div',
-    { attrs: { id: 'root' }},
-    [
-      createElement('board')
-    ]
-  )
 }
 });

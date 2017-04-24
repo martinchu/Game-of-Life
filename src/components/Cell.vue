@@ -1,5 +1,5 @@
 <template>
-  <span v-bind:class = "{'cell':true, 'state':cellState}" v-on:click="toggleStateV2"></span>
+  <span v-bind:class = "{'cell':true, 'state':cellState}" v-on:click="toggleState"></span>
 </template>
 <script>
 
@@ -12,7 +12,7 @@ export default{
     // toggleState(){
     //   this.$emit('toggle-state',this.columnIndex)
     // },
-    toggleStateV2(){
+    toggleState(){
       this.$store.dispatch('toggleCell',{
         columnIndex: this.columnIndex,
         rowIndex: this.rowIndex

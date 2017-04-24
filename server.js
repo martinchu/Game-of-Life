@@ -10,26 +10,31 @@ const server = http.createServer(app);
 const serialize = require('serialize-javascript')
 const io = require('socket.io')(server);
 
-var initialState =[
-  [false,false,false,false,false,false,false,false],
-  [false,false,false,false,false,false,false,false],
-  [false,false,false,false,false,false,false,false],
-  [false,false,false,false,false,false,false,false],
-  [false,false,false,false,false,false,false,false],
-  [false,false,false,false,false,false,false,false],
-  [false,false,false,false,false,false,false,false],
-  [false,false,false,false,false,false,false,false]
-]
+const gameSize = 8;
+
+var setup = {
+  size: gameSize,
+  gameState:[]
+};
+
+var tempRow = [];
+for(var i = 0; i< gameSize;i++){
+  tempRow.push(false);
+}
+for(var j= 0; j< gameSize; j++){
+  setup.gameState.push(tempRow.slice());
+}
+
 app.use(require('body-parser').json())
 
 app.get('/',(req,res) => {
   const template = fs.readFileSync(path.resolve('./index.html'),'utf-8');
   const contentMarket = '<!-- APP -->'
-  res.send(template.replace(contentMarket,`<script> var __INITIAL_STATE__ = ${serialize(initialState)}</script>`));
+  res.send(template.replace(contentMarket,`<script> var __INITIAL_STATE__ = ${serialize(setup)}</script>`));
 });
 
 app.post('/toggle_cell',(req,res) =>{
-  initialState[req.body.rowIndex][req.body.columnIndex] = !initialState[req.body.rowIndex][req.body.columnIndex];
+  setup.gameState[req.body.rowIndex][req.body.columnIndex] = !setup.gameState[req.body.rowIndex][req.body.columnIndex];
   res.sendStatus(200)
 })
 
@@ -48,7 +53,7 @@ server.listen(config.PORT,(()=> {
 }));
 
 io.on('connection',(socket) =>{
-  socket.on('chat message',(context,payload) =>{
-    socket.broadcast.emit('chat message',context,payload);
+  socket.on('toggle cell',(context,payload) =>{
+    socket.broadcast.emit('toggle cell',context,payload);
   });
 });
