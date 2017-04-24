@@ -1,12 +1,12 @@
 {
   "name": "vue-game-of-life",
   "version": "1.0.0",
-  "description": "Ultimate Vue.js course",
+  "description": "Conway's Game of Life",
   "main": "server.js",
-  "author": "Anthony Gore <info@getjsdojo.com>",
+  "author": "Martin Chu",
   "repository": {
     "type": "git",
-    "url": "https://github.com/getjsdojo/vuejs-poster-shop"
+    "url": "https://github.com/martinchu/Game-of-Life"
   },
   "license": "UNLICENSED",
   "scripts": {
