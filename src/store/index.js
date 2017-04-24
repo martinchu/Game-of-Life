@@ -4,17 +4,19 @@ Vue.use(Vuex);
 
 import Axios from 'axios';
 
-export default new Vuex.Store({
+var socket = io();
+
+const store = new Vuex.Store({
   state:{
     size: 8,
-    initialState:[]
+    gameState:[]
   },
   getters: {
     liveCells: state => {
       var liveCells = [];
       for(var i = 0; i < state.size; i++){
         for(var j = 0; j < state.size; j++){
-          if(state.initialState[i][j]){
+          if(state.gameState[i][j]){
             var cell ={
               columnIndex: j,
               rowIndex: i
@@ -29,7 +31,7 @@ export default new Vuex.Store({
       var deadCells = [];
       for(var i = 0; i < state.size; i++){
         for(var j = 0; j < state.size; j++){
-          if(!state.initialState[i][j]){
+          if(!state.gameState[i][j]){
             var cell ={
               columnIndex: j,
               rowIndex: i
@@ -43,16 +45,32 @@ export default new Vuex.Store({
   },
   mutations: {
     toggleCell(state,payload){
-      Vue.set(state.initialState[payload.rowIndex],payload.columnIndex,!state.initialState[payload.rowIndex][payload.columnIndex])
-      Axios.post('/add_event',payload);
+      Vue.set(state.gameState[payload.rowIndex],payload.columnIndex,!state.gameState[payload.rowIndex][payload.columnIndex])
     },
     addNewRow(state,payload){
-      state.initialState.push(payload)
+      state.gameState.push(payload)
     }
   },
   actions:{
-    addEvent(context,payload){
-      console.log(context)
+    toggleCell(context,payload){
+      return new Promise((resolve,reject) =>{
+        Axios.post('/toggle_cell',payload).then(response => {
+          if(response.status === 200){
+            socket.emit('chat message',context,payload);
+            context.commit('toggleCell',payload);
+            resolve();
+          }
+          else{
+            reject(new Error('not toggled succesfully'));
+          }
+        });
+      });
+
     }
   }
 });
+socket.on('chat message',(context,payload) =>{
+  // context.commit('toggleCell',payload);
+  store.commit('toggleCell',payload)
+});
+export { store };

@@ -3,8 +3,10 @@ import './style.scss';
 
 import Board from './components/Board.vue'
 
-// var socket = io();
-import store from './store'
+import { store } from './store'
+
+const initialState =Object.assign({},store.state,{ gameState:window.__INITIAL_STATE__ });
+store.replaceState(initialState)
 
 new Vue({
   el: '#root',
@@ -82,26 +84,26 @@ new Vue({
 // randomly generated the states of the board
 // will push all the states into the Node JS server in future development
 mounted: function(){
-  // var size = this.$store.state.size;
-  for(var rowIndex =0;rowIndex<this.$store.state.size;rowIndex++){
-    var tempRow = [];
-    for(var columnIndex=0;columnIndex<this.$store.state.size;columnIndex++){
-      var random_boolean = Math.random() >= 0.5;
-      tempRow.push(random_boolean);
-    }
-    this.$store.commit('addNewRow',tempRow);
-  }
-  // setInterval(this.onUpdate,2500)
+  setInterval(this.onUpdate,2500)
 },
 computed:{
   size(){
     return this.$store.state.size;
   },
-  initialState(){
-    return this.$store.state.initialState;
+  gameState(){
+    return this.$store.state.gameState;
   }
 },
 beforeDestroy: function(){
   clearInterval(this.onUpdate);
+},
+render(createElement){
+  return createElement(
+    'div',
+    { attrs: { id: 'root' }},
+    [
+      createElement('board')
+    ]
+  )
 }
 });

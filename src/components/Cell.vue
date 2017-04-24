@@ -13,17 +13,21 @@ export default{
     //   this.$emit('toggle-state',this.columnIndex)
     // },
     toggleStateV2(){
-      this.$store.commit('toggleCell',{
+      this.$store.dispatch('toggleCell',{
         columnIndex: this.columnIndex,
         rowIndex: this.rowIndex
       })
+      // this.$store.commit('toggleCell',{
+      //   columnIndex: this.columnIndex,
+      //   rowIndex: this.rowIndex
+      // })
     }
   },
   computed:{
     cellState(){
       var i = this.rowIndex;
       var j = this.columnIndex;
-      return this.$store.state.initialState[i][j];
+      return this.$store.state.gameState[i][j];
     }
   }
 }

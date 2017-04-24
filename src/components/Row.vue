@@ -13,7 +13,7 @@ export default{
   computed:{
     rowState(){
       var i = this.rowIndex;
-      return this.$store.state.initialState[i];
+      return this.$store.state.gameState[i];
     }
   }
 }
